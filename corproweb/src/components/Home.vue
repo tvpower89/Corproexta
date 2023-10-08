@@ -1,18 +1,19 @@
 <template>
-  <div class="hello">
-    Hello
+  <div>
+    <h1>Welcome to the Home Page</h1>
+    <router-link to="/reports/daily">Daily Reports</router-link>
+    <router-link to="/reports/weekly">Weekly Reports</router-link>
+    <router-link to="/reports/monthly">Monthly Reports</router-link>
+    <!-- Add more report tabs as needed -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
   name: 'home-page',
-  props: {
-    msg: String
-  }
-}
+};
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
