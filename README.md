@@ -38,7 +38,11 @@ npm run dev
 ```sh
 npm run build
 ```
+### Format with format
 
+```sh
+npm run format
+```
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
