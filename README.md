@@ -44,3 +44,10 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Add new Admin user to view dashboard
+
+```sh
+node CreateUser.js
+```
+
