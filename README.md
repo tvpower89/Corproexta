@@ -46,6 +46,7 @@ npm run lint
 ```
 
 ## Add new Admin user to view dashboard
+Change name of email and password in the last line of file CreateUsers.js
 
 ```sh
 node CreateUsers.js
