@@ -48,6 +48,6 @@ npm run lint
 ## Add new Admin user to view dashboard
 
 ```sh
-node CreateUser.js
+node CreateUsers.js
 ```
 
