@@ -9,6 +9,11 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     items: [orderItemSchema]
     // Add any other fields you might need
 });
