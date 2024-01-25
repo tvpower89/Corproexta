@@ -25,29 +25,31 @@ export default {
       names: [],
       selectedName: '',
       selectedOrders: []
-    };
+    }
   },
   created() {
-    this.fetchNames();
+    this.fetchNames()
   },
   methods: {
     async fetchNames() {
       try {
-        const response = await fetch('http://localhost:3000/api/orders/names');
-        this.names = await response.json();
+        const response = await fetch('http://localhost:3000/api/orders/names')
+        this.names = await response.json()
       } catch (error) {
-        console.error('There was an error fetching the names:', error);
+        console.error('There was an error fetching the names:', error)
       }
     },
     async fetchOrdersForName() {
-      if (!this.selectedName) return;
+      if (!this.selectedName) return
       try {
-        const response = await fetch(`http://localhost:3000/api/orders/by-name?name=${encodeURIComponent(this.selectedName)}`);
-        this.selectedOrders = await response.json();
+        const response = await fetch(
+          `http://localhost:3000/api/orders/by-name?name=${encodeURIComponent(this.selectedName)}`
+        )
+        this.selectedOrders = await response.json()
       } catch (error) {
-        console.error('There was an error fetching the orders for this name:', error);
+        console.error('There was an error fetching the orders for this name:', error)
       }
     }
   }
-};
+}
 </script>
