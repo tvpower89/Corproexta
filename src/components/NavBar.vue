@@ -14,7 +14,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <router-link to="/login" href="#log-in" class="nav-link">Log in</router-link>>
       </li>
       <li class="nav-item">
-        <router-link to="/" href="#contact" class="nav-link">Contact</router-link>>
+        <router-link to="/dashboard" href="#dashboard" class="nav-link">Dashboard</router-link>>
       </li>
     </ul>
   </nav>
@@ -64,7 +64,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 /* Active link - you can dynamically add a class for the active link */
 .nav-link.active {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
 }
 </style>

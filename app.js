@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import cors from 'cors'
 import User from './models/user.js'
+import Order from './models/order.js'
 const app = express();
 const port = 3000;
 
@@ -62,6 +63,25 @@ app.post('/login', async (req, res) => {
 
     // User authenticated
     res.json({ message: 'Login successful.' });
+});
+
+// Assuming Express.js setup
+app.get('/api/orders/names', async (req, res) => {
+    try {
+        const names = await Order.distinct('name');
+        res.json(names);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+app.get('/api/orders/by-name', async (req, res) => {
+    const { name } = req.query;
+    try {
+        const orders = await Order.find({ name: name }).lean();
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 

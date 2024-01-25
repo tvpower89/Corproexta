@@ -3,7 +3,7 @@ import Order from './models/order.js'; // Make sure this path is correct
 
 async function createOrder(name, orderItems) {
     try {
-        await mongoose.connect('mongodb://localhost:27017/orderDB', {
+        await mongoose.connect('mongodb://localhost:27017/userDB', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -29,21 +29,21 @@ async function createOrder(name, orderItems) {
 const dummyOrderItems = [
     {
         productName: 'Coffee Large',
-        quantity: 2
-    },
-    {
-        productName: 'Coffee Small',
-        quantity: 0 // This quantity is explicitly set to 0 as per your schema's default
-    },
-    {
-        productName: 'Large Tea',
         quantity: 1
     },
     {
+        productName: 'Coffee Small',
+        quantity: 33 // This quantity is explicitly set to 0 as per your schema's default
+    },
+    {
+        productName: 'Large Tea',
+        quantity: 2
+    },
+    {
         productName: 'Small Tea',
-        quantity: 0 // This quantity is explicitly set to 0 as per your schema's default
+        quantity: 22 // This quantity is explicitly set to 0 as per your schema's default
     },
     // Add more dummy products as needed
 ];
 
-createOrder("Test", dummyOrderItems);
+createOrder("josh", dummyOrderItems);
