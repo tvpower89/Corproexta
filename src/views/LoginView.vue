@@ -11,6 +11,7 @@
         <input type="password" id="password" v-model="password" required />
       </div>
       <button type="submit">Login</button>
+      <p v-if="loginError" class="error">{{ loginError }}</p>
     </form>
   </div>
 </template>
@@ -20,14 +21,15 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      loginError: ''
     }
   },
   methods: {
     async submitForm() {
+      this.loginError = ''
       try {
         const response = await fetch('http://localhost:3000/login', {
-          // Adjust the port if different
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -39,15 +41,17 @@ export default {
         })
 
         if (!response.ok) {
-          throw new Error('Login failed')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Login failed')
         }
 
         const data = await response.json()
+        localStorage.setItem('authToken', data.token)
         console.log('Login successful', data)
-        // Here, handle the successful login, e.g., redirecting the user or storing the login state
+        this.$router.push('/dashboard') // Adjust this line as per your routing setup
       } catch (error) {
         console.error('Error during login:', error)
-        // Handle login errors here, e.g., showing an error message to the user
+        this.loginError = error.message
       }
     }
   }
@@ -55,5 +59,12 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styles for the login page here */
+.login-page {
+  /* Your styles for the login page */
+}
+
+.error {
+  color: red;
+  /* Additional styling for error message if needed */
+}
 </style>

@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 import cors from 'cors'
 import User from './models/user.js'
 import Order from './models/order.js'
+import jwt from 'jsonwebtoken'
+
+
 const app = express();
 const port = 3000;
 
@@ -61,10 +64,16 @@ app.post('/login', async (req, res) => {
         return res.status(400).json({ error: 'Invalid password.' });
     }
 
-    // User authenticated
-    res.json({ message: 'Login successful.' });
-});
+    // User authenticated, create a token
+    const token = jwt.sign(
+        { userId: user._id }, // Payload: typically user ID or other identifier
+        'yourSecretKey',      // Secret key: Replace with a strong, environment-specific key
+        { expiresIn: '1h' }   // Token expiration time
+    );
 
+    // Send the token to the client
+    res.json({ message: 'Login successful.', token: token });
+});
 // Assuming Express.js setup
 app.get('/api/orders/names', async (req, res) => {
     try {
