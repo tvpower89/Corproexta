@@ -1,0 +1,7 @@
+ {
+  "name": "corpoApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
