@@ -10,19 +10,19 @@
         <thead>
           <tr>
             <th>Order Date</th>
-            <th>Coffee Large</th>
-            <th>Coffee Small</th>
-            <th>Tea Large</th>
-            <th>Tea Small</th>
+            <th>CHAKARO PEQUENO</th>
+            <th>CHAKARO GRANDE</th>
+            <th>CHAKARO CAJETON</th>
+            <th>MANDA'OR CAJETON</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="order in formattedOrders" :key="order._id">
             <td>{{ formatDate(order.createdDate) }}</td>
-            <td>{{ order['Coffee Large'] || 0 }}</td>
-            <td>{{ order['Coffee Small'] || 0 }}</td>
-            <td>{{ order['Tea Large'] || 0 }}</td>
-            <td>{{ order['Tea Small'] || 0 }}</td>
+            <td>{{ order['CHAKARO PEQUENO'] || 0 }}</td>
+            <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
+            <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
+            <td>{{ order['MANDA\'OR CAJETON'] || 0 }}</td>
           </tr>
         </tbody>
       </table>
@@ -73,10 +73,10 @@ export default {
         const formattedOrder = {
           createdDate: order.createdDate,
           _id: order._id,
-          'Coffee Large': 0,
-          'Coffee Small': 0,
-          'Tea Large': 0,
-          'Tea Small': 0
+          'CHAKARO PEQUENO': 0,
+          'CHAKARO GRANDE': 0,
+          'CHAKARO CAJETON': 0,
+          'MANDA\'OR CAJETON': 0
         };
 
         order.items.forEach(item => {

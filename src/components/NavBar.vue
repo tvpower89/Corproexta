@@ -5,16 +5,16 @@ import { RouterLink, RouterView } from 'vue-router'
     <img src="../assets/corp.png" alt="Girl in a jacket" />
     <ul class="nav-list">
       <li class="nav-item">
-        <router-link to="/" href="#home" class="nav-link">Home</router-link>>
+        <router-link to="/" href="#home" class="nav-link">Home</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/about" href="#about" class="nav-link">About</router-link>>
+        <router-link to="/about" href="#about" class="nav-link">About</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/login" href="#log-in" class="nav-link">Log in</router-link>>
+        <router-link to="/login" href="#log-in" class="nav-link">Log in</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/dashboard" href="#dashboard" class="nav-link">Dashboard</router-link>>
+        <router-link to="/dashboard" href="#dashboard" class="nav-link">Dashboard</router-link>
       </li>
     </ul>
   </nav>
