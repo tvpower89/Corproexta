@@ -3,7 +3,7 @@ import Order from './models/order.js'; // Make sure this path is correct
 
 async function createOrder(name, orderItems) {
     try {
-        await mongoose.connect('mongodb://localhost:27017/userDB', {
+        await mongoose.connect('mongodb://localhost:27017/corproextaDB', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });

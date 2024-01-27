@@ -13,8 +13,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-    },
-    items: [orderItemSchema]
+    }, 
+    items: [orderItemSchema],
+    createdDate: {
+        type: Date,
+        default: Date.now // Automatically set to current date and time
+    }
     // Add any other fields you might need
 });
 

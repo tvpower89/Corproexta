@@ -6,7 +6,7 @@ const saltRounds = 10;
 
 async function createAdminUser(email, password) {
     try {
-        await mongoose.connect('mongodb://localhost:27017/userDB', {
+        await mongoose.connect('mongodb://localhost:27017/corproextaDB', {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
