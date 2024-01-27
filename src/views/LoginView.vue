@@ -58,7 +58,8 @@ export default {
 }
 </script>
 
-<<style scoped>
+<
+<style scoped>
 .login-page {
   max-width: 400px; /* Sets the maximum width of the login form */
   margin: 50px auto; /* Centers the form on the page with margin */
@@ -70,7 +71,8 @@ export default {
   text-align: center; /* Centers the text inside the login box */
 }
 
-input[type="email"], input[type="password"] {
+input[type='email'],
+input[type='password'] {
   width: 100%; /* Makes the input fields take up 100% of the form's width */
   padding: 10px; /* Adds some padding inside the input fields */
   margin: 10px 0; /* Adds margin around the input fields */
@@ -91,8 +93,9 @@ button {
 button:hover {
   background-color: #555; /* Changes the background color when hovering over the button */
 }
-h1, label{
-  color:#333
+h1,
+label {
+  color: #333;
 }
 .error {
   color: red;
