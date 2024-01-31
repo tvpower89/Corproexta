@@ -26,6 +26,8 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ```sh
 npm install
 ```
+## Project Setup
+Ask for .env file for mongodb database in order to get data for db
 
 ### Compile and Hot-Reload for Development
 
