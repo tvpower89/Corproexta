@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import User from './models/user.js'
-
+import 'dotenv/config' 
+const uri = process.env.ATLAS_URI;
 const saltRounds = 10;
 
 async function createAdminUser(email, password) {
     try {
-        await mongoose.connect('mongodb://localhost:27017/corproextaDB', {
+        await mongoose.connect(uri , {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -28,4 +29,4 @@ async function createAdminUser(email, password) {
 }
 
 // Replace with the admin's email and desired password
-createAdminUser('test@gmail.com', 'test');
+createAdminUser('mario@gmail.com', 'mario');

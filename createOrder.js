@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import Order from './models/order.js'; // Make sure this path is correct
-
+import 'dotenv/config' 
+const uri = process.env.ATLAS_URI;
 async function createOrder(name, orderItems) {
     try {
-        await mongoose.connect('mongodb://localhost:27017/corproextaDB', {
+        await mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -36,14 +37,10 @@ const dummyOrderItems = [
         quantity: 1 // This quantity is explicitly set to 0 as per your schema's default
     },
     {
-        productName: 'CHAKARO CAJETON',
-        quantity: 22
-    },
-    {
         productName: 'MANDA\'OR CAJETON',
         quantity: 203// This quantity is explicitly set to 0 as per your schema's default
     },
     // Add more dummy products as needed
 ];
 
-createOrder("William", dummyOrderItems);
+createOrder("Trevor", dummyOrderItems);

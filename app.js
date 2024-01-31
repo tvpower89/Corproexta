@@ -6,7 +6,7 @@ import cors from 'cors'
 import User from './models/user.js'
 import Order from './models/order.js'
 import jwt from 'jsonwebtoken'
-
+import 'dotenv/config';
 
 const app = express();
 const port = 3000;
@@ -15,11 +15,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-mongoose.connect('mongodb://localhost:27017/corproextaDB', { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-})
-.then(() => console.log("Connected to MongoDB"))
+const uri = process.env.ATLAS_URI;
+
+
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }) .then(() => console.log("Connected to MongoDB"))
 .catch(error => console.error("Could not connect to MongoDB", error));
 
 
