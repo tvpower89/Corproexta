@@ -14,6 +14,8 @@
             <th>CHAKARO GRANDE</th>
             <th>CHAKARO CAJETON</th>
             <th>MANDA'OR CAJETON</th>
+            <th>Actions</th>
+            <!-- New column for actions -->
           </tr>
         </thead>
         <tbody>
@@ -23,6 +25,11 @@
             <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
             <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
             <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
+            <td>
+              <!-- New cells for actions -->
+              <button @click="editOrder(order._id)">Edit</button>
+              <button @click="deleteOrder(order._id)">Delete</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -43,6 +50,31 @@ export default {
     this.fetchNames()
   },
   methods: {
+    async deleteOrder(orderId) {
+      if (confirm('Are you sure you want to delete this order?')) {
+        try {
+          const response = await fetch(`http://localhost:3000/api/orders/${orderId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+              // Include the Authorization header if your API requires authentication
+            }
+          })
+
+          if (!response.ok) {
+            throw new Error('Failed to delete the order')
+          }
+
+          // Remove the deleted order from selectedOrders
+          this.selectedOrders = this.selectedOrders.filter((order) => order._id !== orderId)
+          alert('Order deleted successfully.')
+        } catch (error) {
+          console.error('There was an error deleting the order:', error)
+          alert('Failed to delete the order.')
+        }
+      }
+    },
+
     async fetchNames() {
       try {
         const response = await fetch('http://localhost:3000/api/orders/names')
@@ -51,6 +83,7 @@ export default {
         console.error('There was an error fetching the names:', error)
       }
     },
+
     async fetchOrdersForName() {
       if (!this.selectedName) return
       try {
@@ -67,6 +100,7 @@ export default {
       return date.toLocaleDateString('en-US')
     }
   },
+
   computed: {
     formattedOrders() {
       return this.selectedOrders.map((order) => {

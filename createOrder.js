@@ -27,18 +27,22 @@ async function createOrder(name, orderItems) {
         await mongoose.disconnect();
     }
 }
-const dummyOrderItems = [
+const orderItems = [
     {
         productName: 'CHAKARO PEQUENO',
-        quantity: 22
+        quantity: 0
     },
     {
         productName: 'CHAKARO GRANDE',
-        quantity: 1 // This quantity is explicitly set to 0 as per your schema's default
+        quantity: 0 // This quantity is explicitly set to 0 as per your schema's default
+    },
+    {
+        productName: 'CHAKARO CAJETON',
+        quantity: 0
     },
     {
         productName: 'MANDA\'OR CAJETON',
-        quantity: 203// This quantity is explicitly set to 0 as per your schema's default
+        quantity: 0// This quantity is explicitly set to 0 as per your schema's default
     },
     // Add more dummy products as needed
 ];
