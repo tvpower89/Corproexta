@@ -1,66 +1,53 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import mongoose from 'mongoose';
-import Order from './order.js';
+import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
 
-const uri = 'mongodb+srv://test:test@corproexta.ppr1qwa.mongodb.net/corproexta' || '';
+const YourComponent = () => {
+    const navigation = useNavigation(); // Use the useNavigation hook to get the navigation object
 
-const InformationInputPage = () => {
     const [quantityPequeno, setQuantityPequeno] = useState('');
     const [quantityGrande, setQuantityGrande] = useState('');
     const [quantityCajeton, setQuantityCajeton] = useState('');
     const [quantityMandaor, setQuantityMandaor] = useState('');
 
-    const navigation = useNavigation(); // Initialize navigation hook
-
-    async function createOrder(name: string, orderItems: any[]) {
-        try {
-            await mongoose.connect(uri, {});
-            const order = new Order({
-                name: name,
-                items: orderItems
-            });
-            await order.save();
-
-            console.log('Order added successfully');
-        } catch (error) {
-            console.error('Error creating order:', error);
-        } finally {
-            await mongoose.disconnect();
-        }
-    }
-
-    const handleSubmit = () => {
-        const orderItems = [
-            { productName: 'CHAKARO PEQUENO', quantity: quantityPequeno },
-            { productName: 'CHAKARO GRANDE', quantity: quantityGrande },
-            { productName: 'CHAKARO CAJETON', quantity: quantityCajeton },
-            { productName: "MANDA'OR CAJETON", quantity: quantityMandaor }
-        ];
-        console.log(orderItems);
-        //createOrder('test', orderItems);
-    };
+    const orderItems = [
+        { productName: 'CHAKARO PEQUENO', quantity: quantityPequeno, setQuantity: setQuantityPequeno },
+        { productName: 'CHAKARO GRANDE', quantity: quantityGrande, setQuantity: setQuantityGrande },
+        { productName: 'CHAKARO CAJETON', quantity: quantityCajeton, setQuantity: setQuantityCajeton },
+        { productName: "MANDA'OR CAJETON", quantity: quantityMandaor, setQuantity: setQuantityMandaor }
+    ];
 
     const handleCancel = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
 
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Please enter the quantities:</Text>
+    const renderInputs = () => {
+        return orderItems.map((item, index) => (
             <TextInput
-                placeholder="Quantity for Chakaro Pequeño"
-                value={quantityPequeno}
-                onChangeText={setQuantityPequeno}
+                key={index}
+                placeholder={`Quantity for ${item.productName}`}
+                value={item.quantity}
+                onChangeText={item.setQuantity}
                 keyboardType="numeric"
                 style={{ borderWidth: 1, margin: 10, padding: 5 }}
             />
-            {/* Other TextInput components */}
+        ));
+    };
+
+    const handleSubmit = () => {
+        // Do something with the orderItems
+        console.log(orderItems);
+        //createOrder('test', orderItems);
+    };
+
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>Please enter the quantities:</Text>
+            {renderInputs()}
             <Button title="Submit" onPress={handleSubmit} />
-            <Button title="Cancel" onPress={handleCancel} /> {/* Add a Cancel button */}
+            <Button title="Cancel" onPress={handleCancel} />
         </View>
     );
 };
 
-export default InformationInputPage;
+export default YourComponent;
