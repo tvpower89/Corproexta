@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Order from './models/order.js'; // Make sure this path is correct
 import 'dotenv/config' 
 const uri = process.env.ATLAS_URI;
-async function createOrder(name, orderItems) {
+async function createOrder(name, orderItems, client) {
     try {
         await mongoose.connect(uri, {
             useNewUrlParser: true,
@@ -16,7 +16,8 @@ async function createOrder(name, orderItems) {
         // Create a new order with these items
         const order = new Order({ 
             name: name,
-            items: orderItems
+            items: orderItems,
+            client: client
          });
         await order.save();
 
@@ -44,7 +45,15 @@ const orderItems = [
         productName: 'MANDA\'OR CAJETON',
         quantity: 4// This quantity is explicitly set to 0 as per your schema's default
     },
+    {
+        productName: 'CAFE 100G',
+        quantity: 69// This quantity is explicitly set to 0 as per your schema's default
+    },
+    {
+        productName: 'CAFE 200G',
+        quantity: 7// This quantity is explicitly set to 0 as per your schema's default
+    },
     // Add more dummy products as needed
 ];
 
-createOrder("Mario", orderItems);
+createOrder("Mario", orderItems, "Mario Client");

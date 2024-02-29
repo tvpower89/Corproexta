@@ -18,6 +18,11 @@ const orderSchema = new mongoose.Schema({
     createdDate: {
         type: Date,
         default: Date.now // Automatically set to current date and time
+    },
+    client: {
+        type: String,
+        required: true,
+        trim: true
     }
     // Add any other fields you might need
 });

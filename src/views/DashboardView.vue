@@ -14,6 +14,9 @@
             <th>CHAKARO GRANDE</th>
             <th>CHAKARO CAJETON</th>
             <th>MANDA'OR CAJETON</th>
+            <th>CAFE 100G</th>
+            <th>CAFE 200G</th>
+            <th>Client</th>
             <th>Actions</th>
             <!-- New column for actions -->
           </tr>
@@ -25,6 +28,10 @@
             <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
             <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
             <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
+            <td>{{ order["CAFE 100G"] || 0 }}</td>
+            <td>{{ order["CAFE 200G"] || 0 }}</td>
+
+
             <td>
               <!-- New cells for actions -->
               <button @click="editOrder(order._id)">Edit</button>
@@ -56,6 +63,15 @@
           <label for="mandaorCajeton">MANDA'OR CAJETON</label>
           <input type="number" id="mandaorCajeton" v-model="editingOrder['MANDA\'OR CAJETON']">
         </div>
+        <div class="form-group">
+          <label for="cafe100g">CAFE 100G</label>
+          <input type="number" id="cafe100g" v-model="editingOrder['CAFE 100G']">
+        </div>
+        <div class="form-group">
+          <label for="cafe200g">CAFE 200G</label>
+          <input type="number" id="cafe200g" v-model="editingOrder['CAFE 200G']">
+        </div>
+        
         <!-- Add more fields as necessary -->
         <button type="submit">Update Order</button>
       </form>
@@ -98,7 +114,7 @@ export default {
           },
           body: JSON.stringify({
             items: Object.keys(this.editingOrder)
-              .filter((key) => key.includes('CHAKARO') || key.includes("MANDA'OR"))
+              .filter((key) => key.includes('CHAKARO') || key.includes("MANDA'OR") || key.includes("CAFE")) 
               .map((key) => ({
                 productName: key,
                 quantity: this.editingOrder[key]
@@ -184,7 +200,10 @@ export default {
           'CHAKARO PEQUENO': 0,
           'CHAKARO GRANDE': 0,
           'CHAKARO CAJETON': 0,
-          "MANDA'OR CAJETON": 0
+          "MANDA'OR CAJETON": 0,
+          "CAFE 100G": 0,
+          "CAFE 200G": 0
+
         }
 
         order.items.forEach((item) => {
