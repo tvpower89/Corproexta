@@ -91,20 +91,7 @@ app.get('/api/orders/by-name', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-app.patch('/api/orders/:id', async (req, res) => {
-    const { id } = req.params;
-    const update = req.body; // Contains the fields that should be updated
 
-    try {
-        const updatedOrder = await Order.findByIdAndUpdate(id, update, { new: true }).lean();
-        if (!updatedOrder) {
-            return res.status(404).json({ message: "Order not found." });
-        }
-        res.json(updatedOrder);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
 app.delete('/api/orders/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -118,6 +105,34 @@ app.delete('/api/orders/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+app.patch('/api/orders/:id', async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    try {
+        // If updating nested documents (e.g., items array), you might need a more complex update logic
+        // For simplicity, this example assumes direct updates to fields at the root level of the document
+        const updatedOrder = await Order.findById(id); // First, find the document
+
+        if (!updatedOrder) {
+            return res.status(404).json({ message: "Order not found." });
+        }
+
+        // Apply the updates from req.body to the found order document
+        Object.keys(updates).forEach(updateKey => {
+            // For nested arrays like 'items', you need to handle them differently
+            // This example directly sets the value, but you might need to iterate over an array, for example
+            updatedOrder[updateKey] = updates[updateKey];
+        });
+
+        await updatedOrder.save(); // Save the updated document
+
+        res.json(updatedOrder); // Send back the updated document
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 
 
 app.listen(port, () => {

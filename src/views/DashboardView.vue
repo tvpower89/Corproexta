@@ -35,6 +35,32 @@
       </table>
     </div>
   </div>
+  <div v-if="isEditing" class="modal">
+    <div class="modal-content">
+      <span class="close" @click="closeModal">&times;</span>
+      <h2>Edit Order</h2>
+      <form @submit.prevent="updateOrder">
+        <div class="form-group">
+          <label for="chakaroPequeno">CHAKARO PEQUENO</label>
+          <input type="number" id="chakaroPequeno" v-model="editingOrder['CHAKARO PEQUENO']">
+        </div>
+        <div class="form-group">
+          <label for="chakaroGrande">CHAKARO GRANDE</label>
+          <input type="number" id="chakaroGrande" v-model="editingOrder['CHAKARO GRANDE']">
+        </div>
+        <div class="form-group">
+          <label for="chakaroCajeton">CHAKARO CAJETON</label>
+          <input type="number" id="chakaroCajeton" v-model="editingOrder['CHAKARO CAJETON']">
+        </div>
+        <div class="form-group">
+          <label for="mandaorCajeton">MANDA'OR CAJETON</label>
+          <input type="number" id="mandaorCajeton" v-model="editingOrder['MANDA\'OR CAJETON']">
+        </div>
+        <!-- Add more fields as necessary -->
+        <button type="submit">Update Order</button>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,13 +69,61 @@ export default {
     return {
       names: [],
       selectedName: '',
-      selectedOrders: []
+      selectedOrders: [],
+      isEditing: false,
+      editingOrder: null
     }
   },
   created() {
     this.fetchNames()
   },
   methods: {
+    editOrder(orderId) {
+      const order = this.selectedOrders.find((o) => o._id === orderId)
+      if (order) {
+        this.editingOrder = { ...order }
+        this.isEditing = true
+      }
+    },
+
+    async updateOrder() {
+      if (!this.editingOrder) return
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/orders/${this.editingOrder._id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+            // Include the Authorization header if your API requires authentication
+          },
+          body: JSON.stringify({
+            items: Object.keys(this.editingOrder)
+              .filter((key) => key.includes('CHAKARO') || key.includes("MANDA'OR"))
+              .map((key) => ({
+                productName: key,
+                quantity: this.editingOrder[key]
+              }))
+          })
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to update the order')
+        }
+
+        // Update the order in selectedOrders
+        const index = this.selectedOrders.findIndex((o) => o._id === this.editingOrder._id)
+        if (index !== -1) {
+          this.selectedOrders[index] = await response.json()
+        }
+
+        this.isEditing = false // Close the modal
+        alert('Order updated successfully.')
+      } catch (error) {
+        console.error('There was an error updating the order:', error)
+        alert('Failed to update the order.')
+      }
+    },
+
     async deleteOrder(orderId) {
       if (confirm('Are you sure you want to delete this order?')) {
         try {

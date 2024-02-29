@@ -30,21 +30,21 @@ async function createOrder(name, orderItems) {
 const orderItems = [
     {
         productName: 'CHAKARO PEQUENO',
-        quantity: 0
+        quantity: 10
     },
     {
         productName: 'CHAKARO GRANDE',
-        quantity: 0 // This quantity is explicitly set to 0 as per your schema's default
+        quantity: 5 // This quantity is explicitly set to 0 as per your schema's default
     },
     {
         productName: 'CHAKARO CAJETON',
-        quantity: 0
+        quantity: 8
     },
     {
         productName: 'MANDA\'OR CAJETON',
-        quantity: 0// This quantity is explicitly set to 0 as per your schema's default
+        quantity: 4// This quantity is explicitly set to 0 as per your schema's default
     },
     // Add more dummy products as needed
 ];
 
-createOrder("Trevor", dummyOrderItems);
+createOrder("Mario", orderItems);
