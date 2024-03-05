@@ -12,6 +12,7 @@
         <thead>
           <tr>
             <th>Order Date</th>
+            <th>Name</th>
             <th>CHAKARO PEQUENO</th>
             <th>CHAKARO GRANDE</th>
             <th>CHAKARO CAJETON</th>
@@ -26,6 +27,7 @@
         <tbody>
           <tr v-for="order in formattedOrders" :key="order._id">
             <td>{{ formatDate(order.createdDate) }}</td>
+            <td>{{ order.name }}</td>
             <td>{{ order['CHAKARO PEQUENO'] || 0 }}</td>
             <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
             <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
@@ -204,6 +206,7 @@ export default {
       return this.selectedOrders.map((order) => {
         const formattedOrder = {
           createdDate: order.createdDate,
+          name: order.name,
           _id: order._id,
           'CHAKARO PEQUENO': 0,
           'CHAKARO GRANDE': 0,
