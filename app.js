@@ -83,22 +83,37 @@ app.get('/api/orders/names', async (req, res) => {
     }
 });
 app.get('/api/orders/', async (req, res) => {
-    const { name } = req.query;
+    const { name, startDate, endDate } = req.query;
     let query = {};
 
-    // If a name query parameter is provided, use it to filter orders
     if (name) {
         query.name = name;
     }
 
+    if (startDate) {
+        query.createdDate = { ...query.createdDate, $gte: new Date(startDate) };
+    }
+
+    if (endDate) {
+        // Adjust endDate to include the whole day
+        const endOfDay = new Date(endDate);
+        endOfDay.setDate(endOfDay.getDate() + 1);
+        endOfDay.setHours(23, 59, 59, 999); // Sets time to the last millisecond of the day
+
+        query.createdDate = { ...query.createdDate, $lte: endOfDay };
+    }
+
     try {
-        // Fetches all orders if no name is provided, or filters by name if it is
         const orders = await Order.find(query).lean();
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+
+
 
 app.get('/api/orders/by-name', async (req, res) => {
     const { name } = req.query;

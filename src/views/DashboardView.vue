@@ -4,9 +4,16 @@
       <option disabled value="">Please select a name</option>
       <option v-for="name in names" :key="name" :value="name">{{ name }}</option>
       <option value="all">All</option>
-
     </select>
+    <div>
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" v-model="startDate" />
 
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" v-model="endDate" />
+
+      <button @click="fetchOrdersForName">Filter</button>
+    </div>
     <div v-if="selectedOrders.length > 0">
       <table>
         <thead>
@@ -34,7 +41,7 @@
             <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
             <td>{{ order['CAFE 100G'] || 0 }}</td>
             <td>{{ order['CAFE 200G'] || 0 }}</td>
-            <td> {{ order.client }}</td>
+            <td>{{ order.client }}</td>
 
             <td>
               <!-- New cells for actions -->
@@ -90,14 +97,15 @@ export default {
       names: [],
       selectedName: '',
       selectedOrders: [],
+      startDate: '',
+      endDate: '',
       isEditing: false,
       editingOrder: null
     }
   },
   created() {
     this.fetchNames()
-    this.fetchOrdersForName(); // Fetch all orders when component is created
-
+    this.fetchOrdersForName() // Fetch all orders when component is created
   },
   methods: {
     editOrder(orderId) {
@@ -183,10 +191,13 @@ export default {
     },
 
     async fetchOrdersForName() {
-      let url =
-        this.selectedName && this.selectedName !== 'all'
-          ? `http://localhost:3000/api/orders/by-name?name=${encodeURIComponent(this.selectedName)}`
-          : 'http://localhost:3000/api/orders/'
+      let params = new URLSearchParams({
+        name: this.selectedName !== 'all' ? this.selectedName : undefined,
+        startDate: this.startDate,
+        endDate: this.endDate
+      }).toString()
+
+      let url = `http://localhost:3000/api/orders/?${params}`
 
       try {
         const response = await fetch(url)
@@ -214,7 +225,7 @@ export default {
           "MANDA'OR CAJETON": 0,
           'CAFE 100G': 0,
           'CAFE 200G': 0,
-          client : order.client
+          client: order.client
         }
 
         order.items.forEach((item) => {
