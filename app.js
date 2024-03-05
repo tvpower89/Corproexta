@@ -82,25 +82,36 @@ app.get('/api/orders/names', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+
 app.get('/api/orders/', async (req, res) => {
-    const { name, startDate, endDate } = req.query;
+    const { name, startDate, endDate, specificDate } = req.query;
     let query = {};
 
     if (name) {
         query.name = name;
     }
 
-    if (startDate) {
-        query.createdDate = { ...query.createdDate, $gte: new Date(startDate) };
-    }
+    if (specificDate) {
+        const startOfDay = new Date(specificDate);
+        startOfDay.setHours(0, 0, 0, 0);
 
-    if (endDate) {
-        // Adjust endDate to include the whole day
-        const endOfDay = new Date(endDate);
+        const endOfDay = new Date(specificDate);
         endOfDay.setDate(endOfDay.getDate() + 1);
-        endOfDay.setHours(23, 59, 59, 999); // Sets time to the last millisecond of the day
 
-        query.createdDate = { ...query.createdDate, $lte: endOfDay };
+        endOfDay.setHours(23, 59, 59, 999);
+
+        query.createdDate = { $gte: startOfDay, $lte: endOfDay };
+    } else {
+        if (startDate) {
+            query.createdDate = { ...query.createdDate, $gte: new Date(startDate) };
+        }
+        if (endDate) {
+            const endOfDay = new Date(endDate);
+            endOfDay.setDate(endOfDay.getDate() + 1);
+            query.createdDate = { ...query.createdDate, $lt: endOfDay };
+        }
     }
 
     try {

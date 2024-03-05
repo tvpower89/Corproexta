@@ -14,6 +14,11 @@
 
       <button @click="fetchOrdersForName">Filter</button>
     </div>
+    <div>
+  <label for="specificDate">Specific Date:</label>
+  <input type="date" id="specificDate" v-model="specificDate" />
+</div>
+
     <div v-if="selectedOrders.length > 0">
       <table>
         <thead>
@@ -96,6 +101,7 @@ export default {
     return {
       names: [],
       selectedName: '',
+      specificDate: '',
       selectedOrders: [],
       startDate: '',
       endDate: '',
@@ -191,23 +197,25 @@ export default {
     },
 
     async fetchOrdersForName() {
-  // Initialize URLSearchParams
   let params = new URLSearchParams();
 
-  // Conditionally add 'name' parameter if it's not 'all'
   if (this.selectedName && this.selectedName !== 'all') {
     params.append('name', this.selectedName);
   }
 
-  // Always add startDate and endDate to the query if they are set
-  if (this.startDate) {
-    params.append('startDate', this.startDate);
-  }
-  if (this.endDate) {
-    params.append('endDate', this.endDate);
+  // Check if a specific date is set, prioritize it over date range
+  if (this.specificDate) {
+    params.append('specificDate', this.specificDate);
+  } else {
+    // Otherwise, use the date range filters if specificDate is not set
+    if (this.startDate) {
+      params.append('startDate', this.startDate);
+    }
+    if (this.endDate) {
+      params.append('endDate', this.endDate);
+    }
   }
 
-  // Construct the URL with query parameters
   let url = `http://localhost:3000/api/orders/?${params.toString()}`;
 
   try {
@@ -217,6 +225,7 @@ export default {
     console.error('There was an error fetching the orders:', error);
   }
 },
+
 
     formatDate(dateString) {
       const date = new Date(dateString)
