@@ -191,21 +191,33 @@ export default {
     },
 
     async fetchOrdersForName() {
-      let params = new URLSearchParams({
-        name: this.selectedName !== 'all' ? this.selectedName : undefined,
-        startDate: this.startDate,
-        endDate: this.endDate
-      }).toString()
+  // Initialize URLSearchParams
+  let params = new URLSearchParams();
 
-      let url = `http://localhost:3000/api/orders/?${params}`
+  // Conditionally add 'name' parameter if it's not 'all'
+  if (this.selectedName && this.selectedName !== 'all') {
+    params.append('name', this.selectedName);
+  }
 
-      try {
-        const response = await fetch(url)
-        this.selectedOrders = await response.json()
-      } catch (error) {
-        console.error('There was an error fetching the orders:', error)
-      }
-    },
+  // Always add startDate and endDate to the query if they are set
+  if (this.startDate) {
+    params.append('startDate', this.startDate);
+  }
+  if (this.endDate) {
+    params.append('endDate', this.endDate);
+  }
+
+  // Construct the URL with query parameters
+  let url = `http://localhost:3000/api/orders/?${params.toString()}`;
+
+  try {
+    const response = await fetch(url);
+    this.selectedOrders = await response.json();
+  } catch (error) {
+    console.error('There was an error fetching the orders:', error);
+  }
+},
+
     formatDate(dateString) {
       const date = new Date(dateString)
       return date.toLocaleDateString('en-US')
