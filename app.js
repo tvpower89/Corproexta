@@ -86,11 +86,14 @@ app.get('/api/orders/names', async (req, res) => {
 
 
 app.get('/api/orders/', async (req, res) => {
-    const { name, startDate, endDate, specificDate } = req.query;
+    const { name, startDate, endDate, specificDate, clientName } = req.query;
     let query = {};
 
     if (name) {
         query.name = name;
+    }
+    if (clientName) {
+        query.client = { $regex: clientName, $options: 'i' }; // This uses a regex for case-insensitive matching
     }
 
     if (specificDate) {

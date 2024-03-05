@@ -18,6 +18,10 @@
   <label for="specificDate">Specific Date:</label>
   <input type="date" id="specificDate" v-model="specificDate" />
 </div>
+<div>
+  <label for="clientName">Client Name:</label>
+  <input type="text" id="clientName" v-model="clientName" />
+</div>
 
     <div v-if="selectedOrders.length > 0">
       <table>
@@ -101,6 +105,7 @@ export default {
     return {
       names: [],
       selectedName: '',
+      clientName: '',
       specificDate: '',
       selectedOrders: [],
       startDate: '',
@@ -198,7 +203,9 @@ export default {
 
     async fetchOrdersForName() {
   let params = new URLSearchParams();
-
+  if (this.clientName) {
+    params.append('clientName', this.clientName);
+  }
   if (this.selectedName && this.selectedName !== 'all') {
     params.append('name', this.selectedName);
   }
