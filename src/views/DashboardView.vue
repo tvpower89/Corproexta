@@ -32,6 +32,7 @@
             <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
             <td>{{ order['CAFE 100G'] || 0 }}</td>
             <td>{{ order['CAFE 200G'] || 0 }}</td>
+            <td> {{ order.client }}</td>
 
             <td>
               <!-- New cells for actions -->
@@ -209,7 +210,8 @@ export default {
           'CHAKARO CAJETON': 0,
           "MANDA'OR CAJETON": 0,
           'CAFE 100G': 0,
-          'CAFE 200G': 0
+          'CAFE 200G': 0,
+          client : order.client
         }
 
         order.items.forEach((item) => {
