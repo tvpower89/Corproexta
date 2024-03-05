@@ -3,6 +3,8 @@
     <select v-model="selectedName" @change="fetchOrdersForName">
       <option disabled value="">Please select a name</option>
       <option v-for="name in names" :key="name" :value="name">{{ name }}</option>
+      <option value="all">All</option>
+
     </select>
 
     <div v-if="selectedOrders.length > 0">
@@ -28,9 +30,8 @@
             <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
             <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
             <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
-            <td>{{ order["CAFE 100G"] || 0 }}</td>
-            <td>{{ order["CAFE 200G"] || 0 }}</td>
-
+            <td>{{ order['CAFE 100G'] || 0 }}</td>
+            <td>{{ order['CAFE 200G'] || 0 }}</td>
 
             <td>
               <!-- New cells for actions -->
@@ -49,29 +50,29 @@
       <form @submit.prevent="updateOrder">
         <div class="form-group">
           <label for="chakaroPequeno">CHAKARO PEQUENO</label>
-          <input type="number" id="chakaroPequeno" v-model="editingOrder['CHAKARO PEQUENO']">
+          <input type="number" id="chakaroPequeno" v-model="editingOrder['CHAKARO PEQUENO']" />
         </div>
         <div class="form-group">
           <label for="chakaroGrande">CHAKARO GRANDE</label>
-          <input type="number" id="chakaroGrande" v-model="editingOrder['CHAKARO GRANDE']">
+          <input type="number" id="chakaroGrande" v-model="editingOrder['CHAKARO GRANDE']" />
         </div>
         <div class="form-group">
           <label for="chakaroCajeton">CHAKARO CAJETON</label>
-          <input type="number" id="chakaroCajeton" v-model="editingOrder['CHAKARO CAJETON']">
+          <input type="number" id="chakaroCajeton" v-model="editingOrder['CHAKARO CAJETON']" />
         </div>
         <div class="form-group">
           <label for="mandaorCajeton">MANDA'OR CAJETON</label>
-          <input type="number" id="mandaorCajeton" v-model="editingOrder['MANDA\'OR CAJETON']">
+          <input type="number" id="mandaorCajeton" v-model="editingOrder['MANDA\'OR CAJETON']" />
         </div>
         <div class="form-group">
           <label for="cafe100g">CAFE 100G</label>
-          <input type="number" id="cafe100g" v-model="editingOrder['CAFE 100G']">
+          <input type="number" id="cafe100g" v-model="editingOrder['CAFE 100G']" />
         </div>
         <div class="form-group">
           <label for="cafe200g">CAFE 200G</label>
-          <input type="number" id="cafe200g" v-model="editingOrder['CAFE 200G']">
+          <input type="number" id="cafe200g" v-model="editingOrder['CAFE 200G']" />
         </div>
-        
+
         <!-- Add more fields as necessary -->
         <button type="submit">Update Order</button>
       </form>
@@ -92,6 +93,8 @@ export default {
   },
   created() {
     this.fetchNames()
+    this.fetchOrdersForName(); // Fetch all orders when component is created
+
   },
   methods: {
     editOrder(orderId) {
@@ -114,7 +117,9 @@ export default {
           },
           body: JSON.stringify({
             items: Object.keys(this.editingOrder)
-              .filter((key) => key.includes('CHAKARO') || key.includes("MANDA'OR") || key.includes("CAFE")) 
+              .filter(
+                (key) => key.includes('CHAKARO') || key.includes("MANDA'OR") || key.includes('CAFE')
+              )
               .map((key) => ({
                 productName: key,
                 quantity: this.editingOrder[key]
@@ -175,14 +180,16 @@ export default {
     },
 
     async fetchOrdersForName() {
-      if (!this.selectedName) return
+      let url =
+        this.selectedName && this.selectedName !== 'all'
+          ? `http://localhost:3000/api/orders/by-name?name=${encodeURIComponent(this.selectedName)}`
+          : 'http://localhost:3000/api/orders/'
+
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/orders/by-name?name=${encodeURIComponent(this.selectedName)}`
-        )
+        const response = await fetch(url)
         this.selectedOrders = await response.json()
       } catch (error) {
-        console.error('There was an error fetching the orders for this name:', error)
+        console.error('There was an error fetching the orders:', error)
       }
     },
     formatDate(dateString) {
@@ -201,9 +208,8 @@ export default {
           'CHAKARO GRANDE': 0,
           'CHAKARO CAJETON': 0,
           "MANDA'OR CAJETON": 0,
-          "CAFE 100G": 0,
-          "CAFE 200G": 0
-
+          'CAFE 100G': 0,
+          'CAFE 200G': 0
         }
 
         order.items.forEach((item) => {

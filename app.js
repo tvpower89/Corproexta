@@ -82,6 +82,24 @@ app.get('/api/orders/names', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+app.get('/api/orders/', async (req, res) => {
+    const { name } = req.query;
+    let query = {};
+
+    // If a name query parameter is provided, use it to filter orders
+    if (name) {
+        query.name = name;
+    }
+
+    try {
+        // Fetches all orders if no name is provided, or filters by name if it is
+        const orders = await Order.find(query).lean();
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 app.get('/api/orders/by-name', async (req, res) => {
     const { name } = req.query;
     try {
@@ -91,6 +109,7 @@ app.get('/api/orders/by-name', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 app.delete('/api/orders/:id', async (req, res) => {
     const { id } = req.params;
