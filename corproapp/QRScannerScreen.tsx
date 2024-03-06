@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import InformationInputPage from './InformationInputPage'; // Import your new component for information input
 
 const QRScannerScreen = () => {
@@ -35,7 +34,7 @@ const QRScannerScreen = () => {
                     reactivateTimeout={5000}
                 />
             ) : (
-                <InformationInputPage />
+                <InformationInputPage setshowpage={setShowInputPage} />
             )}
             {scanned && <Text style={{ marginTop: 20 }}>Scanned!</Text>}
             <Button title="Clear Scanned" onPress={() => setScanned(false)} />
