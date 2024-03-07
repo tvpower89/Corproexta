@@ -5,9 +5,10 @@ import bcrypt from 'bcrypt';
 import cors from 'cors'
 import User from './models/user.js'
 import Order from './models/order.js'
+import Notification from './models/notification.js'
 import jwt from 'jsonwebtoken'
 import 'dotenv/config';
-
+import createOrder from './createOrder.js'
 const app = express();
 const port = 3000;
 
@@ -181,6 +182,48 @@ app.patch('/api/orders/:id', async (req, res) => {
     }
 });
 
+app.post('/api/orders', async (req, res) => {
+    const { name, items, client } = req.body;
+
+    try {
+        // Save the new order
+        const newOrder = new Order({ name, items, client });
+        await newOrder.save();
+
+        // Calculate date 30 days ago
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        // Count existing orders for this client from this name in the last 30 days
+        const count = await Order.countDocuments({
+            name,
+            client,
+            createdDate: { $gte: thirtyDaysAgo }
+        });
+
+        // If more than 3 orders (including the current one), create a notification
+        if (count > 3) {
+            const message = `${name} has sent more than 3 orders to ${client} in the last 30 days.`;
+            const notification = new Notification({ message });
+            await notification.save();
+            // Optionally, you can also send back a notification in the response or handle it as needed
+        }
+
+        res.status(201).json({ message: 'Order added successfully', order: newOrder });
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: 'Error creating order', error: error.message });
+    }
+});
+
+app.get('/api/notifications', async (req, res) => {
+    try {
+        const notifications = await Notification.find({}).sort({ date: -1 }); // Get the latest notifications
+        res.json(notifications);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
 
 
 app.listen(port, () => {

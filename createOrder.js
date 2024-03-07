@@ -8,7 +8,7 @@ async function createOrder(name, orderItems, client) {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-
+    
     
         // Create order items with default quantity of 0
         
@@ -56,4 +56,5 @@ const orderItems = [
     // Add more dummy products as needed
 ];
 
-createOrder("Carlos", orderItems, "Company 4");
+
+export default createOrder
