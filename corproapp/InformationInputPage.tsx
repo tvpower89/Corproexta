@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import QRScannerScreen from "./QRScannerScreen"; // Import the useNavigation hook
+import { MMKV } from 'react-native-mmkv'
 
-const YourComponent = ({setshowpage} : {setshowpage: any}) => {
+export const storage = new MMKV()
+
+const YourComponent = ({ setshowpage }) => {
     const navigation = useNavigation(); // Use the useNavigation hook to get the navigation object
 
     const [quantityPequeno, setQuantityPequeno] = useState('');
     const [quantityGrande, setQuantityGrande] = useState('');
     const [quantityCajeton, setQuantityCajeton] = useState('');
     const [quantityMandaor, setQuantityMandaor] = useState('');
+    const [quantityCafe100g, setQuantityCafe100g] = useState('');
+    const [quantityCafe200g, setQuantityCafe200g] = useState('');
 
     const orderItems = [
         { productName: 'CHAKARO PEQUENO', quantity: quantityPequeno, setQuantity: setQuantityPequeno },
         { productName: 'CHAKARO GRANDE', quantity: quantityGrande, setQuantity: setQuantityGrande },
         { productName: 'CHAKARO CAJETON', quantity: quantityCajeton, setQuantity: setQuantityCajeton },
-        { productName: "MANDA'OR CAJETON", quantity: quantityMandaor, setQuantity: setQuantityMandaor }
+        { productName: "MANDA'OR CAJETON", quantity: quantityMandaor, setQuantity: setQuantityMandaor },
+        { productName: "Cafe 100g", quantity: quantityCafe100g, setQuantity: setQuantityCafe100g },
+        { productName: "Cafe 200g", quantity: quantityCafe200g, setQuantity: setQuantityCafe200g }
     ];
 
     const handleCancel = () => {
-      //  navigation.navigate("QRScannerScreen") // Navigate back to the previous screen
         setshowpage(false)
     };
-
-    //push to the stack read navigation\
-
 
     const renderInputs = () => {
         return orderItems.map((item, index) => (
@@ -40,41 +42,26 @@ const YourComponent = ({setshowpage} : {setshowpage: any}) => {
     };
 
     const handleSubmit = async () => {
-        // Assuming 'name' and 'client' are required fields and have fixed values for demonstration
-        const orderName = "Sample Order Name"; // This should be replaced with actual data
-        const clientName = "Sample Client Name"; // This should be replaced with actual data
+        const orderName = "Sample Order Name";
+        const clientName = "Sample Client Name";
 
-        // Filter out items with empty quantities
         const filteredOrderItems = orderItems
             .filter(item => item.quantity !== '')
             .map(item => ({ productName: item.productName, quantity: parseInt(item.quantity) }));
 
         try {
-            const response = await fetch('http://10.0.2.2:3000/api/orders', { // Use your actual backend URL here
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: orderName,
-                    client: clientName,
-                    items: filteredOrderItems,
-                }),
+            const orders = MMKV.get('orders') || [];
+            orders.push({
+                name: orderName,
+                client: clientName,
+                items: filteredOrderItems,
             });
+            MMKV.set('orders', orders);
 
-            if (!response.ok) {
-                throw new Error('Failed to create order');
-            }
-
-            const responseData = await response.json();
-            console.log('Order created successfully:', responseData);
-
-            // Optional: Navigate or update UI upon successful order creation
-            setshowpage(false); // For example, go back to a previous screen or show success message
+            setshowpage(false);
         } catch (error) {
             console.error('Error submitting order:', error);
         }
-        console.log(orderItems)
     };
 
     return (
