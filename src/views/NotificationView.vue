@@ -1,16 +1,22 @@
 <template>
     <div class="notification-container">
       <h1>Notifications</h1>
+      <button @click="clearNotifications" v-if="notifications.length">Clear All</button> <!-- Clear button -->
       <div v-if="notifications.length">
         <table>
           <thead>
             <tr>
               <th>Notification Message</th>
+              <th>Actions</th> <!-- Added column for actions -->
             </tr>
           </thead>
           <tbody>
             <tr v-for="notification in notifications" :key="notification._id">
               <td>{{ notification.message }}</td>
+              <td>
+                <!-- Button to delete individual notification -->
+                <button @click="deleteNotification(notification._id)">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -41,36 +47,27 @@
           console.error('Error fetching notifications:', error);
         }
       },
+      async deleteNotification(notificationId) {
+        try {
+          await fetch(`http://localhost:3000/api/notifications/${notificationId}`, { method: 'DELETE' });
+          this.notifications = this.notifications.filter(n => n._id !== notificationId);
+        } catch (error) {
+          console.error('Error deleting notification:', error);
+        }
+      },
+      async clearNotifications() {
+        try {
+          // Assuming /api/notifications/clear deletes all notifications
+          await fetch('http://localhost:3000/api/notifications', { method: 'DELETE' });
+          this.notifications = [];
+        } catch (error) {
+          console.error('Error clearing notifications:', error);
+        }
+      }
     },
   };
   </script>
   
   <style>
-  .notification-container {
-    color: white; /* Makes text color white */
-  }
   
-  table {
-    width: 100%; /* Makes table width 100% of its container */
-    border-collapse: collapse; /* Collapses border to avoid double borders */
-  }
-  
-  th, td {
-    border: 1px solid white; /* Adds white border to table header and cell */
-    padding: 8px; /* Adds padding inside table cells */
-    text-align: left; /* Aligns text to the left */
-  }
-  
-  thead {
-    background-color: #555; /* Darker background for the table header */
-  }
-  
-  tbody tr:nth-child(odd) {
-    background-color: #333; /* Adds a darker background to every other row */
-  }
-  
-  tbody tr:hover {
-    background-color: #777; /* Changes background color of row on hover */
-  }
   </style>
-  

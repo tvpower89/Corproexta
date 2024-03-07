@@ -226,6 +226,35 @@ app.get('/api/notifications', async (req, res) => {
 });
 
 
+
+
+app.delete('/api/notifications', async (req, res) => {
+    try {
+      await Notification.deleteMany({}); // Deletes all notifications
+      res.json({ message: 'All notifications deleted successfully' });
+    } catch (error) {
+      console.error('Failed to delete notifications:', error);
+      res.status(500).json({ message: 'Failed to delete notifications', error: error.message });
+    }
+  });
+// Delete a specific notification by ID
+app.delete('/api/notifications/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedNotification = await Notification.findByIdAndDelete(id);
+    if (!deletedNotification) {
+      return res.status(404).json({ message: "Notification not found." });
+    }
+    res.json({ message: 'Notification deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting notification:', error);
+    res.status(500).json({ message: 'Failed to delete notification', error: error.message });
+  }
+});
+
+
+
 app.listen(port, () => {
    console.log(`Server started on http://localhost:${port}`);
 });
