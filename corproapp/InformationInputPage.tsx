@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { MMKV } from 'react-native-mmkv'
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
-export const storage = new MMKV()
+const YourComponent = ({ setshowpage } : { setshowpage: any }) => {
+    const navigation = useNavigation();
 
-const YourComponent = ({ setshowpage }) => {
-    const navigation = useNavigation(); // Use the useNavigation hook to get the navigation object
-
-    const [quantityPequeno, setQuantityPequeno] = useState('');
-    const [quantityGrande, setQuantityGrande] = useState('');
-    const [quantityCajeton, setQuantityCajeton] = useState('');
-    const [quantityMandaor, setQuantityMandaor] = useState('');
-    const [quantityCafe100g, setQuantityCafe100g] = useState('');
-    const [quantityCafe200g, setQuantityCafe200g] = useState('');
+    const [quantityPequeno, setQuantityPequeno] = useState<number>(0);
+    const [quantityGrande, setQuantityGrande] = useState<number>(0);
+    const [quantityCajeton, setQuantityCajeton] = useState<number>(0);
+    const [quantityMandaor, setQuantityMandaor] = useState<number>(0);
+    const [quantityCafe100g, setQuantityCafe100g] = useState<number>(0);
+    const [quantityCafe200g, setQuantityCafe200g] = useState<number>(0);
 
     const orderItems = [
         { productName: 'CHAKARO PEQUENO', quantity: quantityPequeno, setQuantity: setQuantityPequeno },
@@ -25,42 +23,49 @@ const YourComponent = ({ setshowpage }) => {
     ];
 
     const handleCancel = () => {
-        setshowpage(false)
+        setshowpage(false);
     };
 
     const renderInputs = () => {
         return orderItems.map((item, index) => (
-            <TextInput
-                key={index}
-                placeholder={`Quantity for ${item.productName}`}
-                value={item.quantity}
-                onChangeText={item.setQuantity}
-                keyboardType="numeric"
-                style={{ borderWidth: 1, margin: 10, padding: 5 }}
-            />
+            <View key={index}>
+                <Text>{`Quantity for ${item.productName}` + ":"}</Text>
+                <TextInput
+                    placeholder="Enter quantity"
+                    value={item.quantity.toString()}
+                    onChangeText={(text) => {
+                        const quantity = parseInt(text, 10);
+                        if (!isNaN(quantity)) {
+                            item.setQuantity(quantity);
+                        } else {
+                            item.setQuantity(0);
+                        }
+                    }}
+                    keyboardType="numeric"
+                    style={{ borderWidth: 1, margin: 10, padding: 5 }}
+                />
+            </View>
         ));
     };
 
     const handleSubmit = async () => {
-        const orderName = "Sample Order Name";
-        const clientName = "Sample Client Name";
-
-        const filteredOrderItems = orderItems
-            .filter(item => item.quantity !== '')
-            .map(item => ({ productName: item.productName, quantity: parseInt(item.quantity) }));
+        // Filter out items with empty quantities
+        const filteredOrderItems = orderItems.filter(item => item.quantity !== '');
 
         try {
-            const orders = MMKV.get('orders') || [];
-            orders.push({
-                name: orderName,
-                client: clientName,
-                items: filteredOrderItems,
-            });
-            MMKV.set('orders', orders);
+            // Fetch existing orders from AsyncStorage
+            const existingOrders = await AsyncStorage.getItem('orders');
+            let orders = existingOrders ? JSON.parse(existingOrders) : [];
 
-            setshowpage(false);
+            // Add the new order items
+            orders.push(filteredOrderItems);
+
+            // Save the updated orders back to AsyncStorage
+            await AsyncStorage.setItem('orders', JSON.stringify(orders));
+
+            setshowpage(false); // Optional: Update UI or navigate to a different screen
         } catch (error) {
-            console.error('Error submitting order:', error);
+            console.error('Error saving order:', error);
         }
     };
 

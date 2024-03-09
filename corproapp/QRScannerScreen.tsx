@@ -14,16 +14,6 @@ const QRScannerScreen = () => {
         Alert.alert('QR Code Scanned', `Data: ${data}`, [{ text: 'OK' }]);
     };
 
-    /* const saveDataOffline = async (data: string) => {
-         try {
-             const existingData = await AsyncStorage.getItem('offlineData');
-             const newData = existingData ? JSON.parse(existingData) : [];
-             newData.push(data);
-             await AsyncStorage.setItem('offlineData', JSON.stringify(newData));
-         } catch (error) {
-             console.error('Error saving data offline:', error);
-         }
-     };*/
 
     return (
         <View style={{ flex: 1 }}>
