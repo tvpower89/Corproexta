@@ -15,15 +15,15 @@
       <button @click="fetchOrdersForName">Filter</button>
     </div>
     <div>
-  <label for="specificDate">Specific Date:</label>
-  <input type="date" id="specificDate" v-model="specificDate" />
-</div>
-<div>
-  <label for="clientName">Client Name:</label>
-  <input type="text" id="clientName" v-model="clientName" />
-</div>
+      <label for="specificDate">Specific Date:</label>
+      <input type="date" id="specificDate" v-model="specificDate" />
+    </div>
+    <div>
+      <label for="clientName">Client Name:</label>
+      <input type="text" id="clientName" v-model="clientName" />
+    </div>
 
-    <div v-if="selectedOrders.length > 0">
+    <div class="orders-container" v-if="selectedOrders.length > 0">
       <table>
         <thead>
           <tr>
@@ -95,14 +95,32 @@
         <!-- Add more fields as necessary -->
         <button type="submit">Update Order</button>
       </form>
+      
     </div>
   </div>
+  <h1>Test</h1>
+  <div class="pagination-container">
+    <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li
+              v-for="pageNum in pageNumbers"
+              :key="pageNum"
+              class="page-item"
+              @click="fetchOrdersForName(pageNum)"
+            >
+              <a class="page-link">{{ pageNum }}</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      currentPage: 1,
+      totalPages: 0,
       names: [],
       selectedName: '',
       clientName: '',
@@ -201,38 +219,34 @@ export default {
       }
     },
 
-    async fetchOrdersForName() {
-  let params = new URLSearchParams();
-  if (this.clientName) {
-    params.append('clientName', this.clientName);
-  }
-  if (this.selectedName && this.selectedName !== 'all') {
-    params.append('name', this.selectedName);
-  }
+    async fetchOrdersForName(page = this.currentPage) {
+      // Default to current page if no page is provided
+      this.currentPage = page
+      let params = new URLSearchParams({
+        // Add other parameters here
+        page: this.currentPage,
+        limit: 50
+      })
+      if (this.clientName) params.append('clientName', this.clientName)
+      if (this.selectedName && this.selectedName !== 'all') params.append('name', this.selectedName)
+      if (this.specificDate) params.append('specificDate', this.specificDate)
+      else {
+        if (this.startDate) params.append('startDate', this.startDate)
+        if (this.endDate) params.append('endDate', this.endDate)
+      }
 
-  // Check if a specific date is set, prioritize it over date range
-  if (this.specificDate) {
-    params.append('specificDate', this.specificDate);
-  } else {
-    // Otherwise, use the date range filters if specificDate is not set
-    if (this.startDate) {
-      params.append('startDate', this.startDate);
-    }
-    if (this.endDate) {
-      params.append('endDate', this.endDate);
-    }
-  }
+      let url = `http://localhost:3000/api/orders/?${params.toString()}`
 
-  let url = `http://localhost:3000/api/orders/?${params.toString()}`;
-
-  try {
-    const response = await fetch(url);
-    this.selectedOrders = await response.json();
-  } catch (error) {
-    console.error('There was an error fetching the orders:', error);
-  }
-},
-
+      try {
+        const response = await fetch(url)
+        const data = await response.json() // Ensure await is used correctly here
+        this.selectedOrders = data.orders
+        this.totalPages = data.totalPages
+        console.log(this.totalPages + ' test')
+      } catch (error) {
+        console.error('There was an error fetching the orders:', error)
+      }
+    },
 
     formatDate(dateString) {
       const date = new Date(dateString)
@@ -241,6 +255,12 @@ export default {
   },
 
   computed: {
+    pageNumbers() {
+      console.log('Total pages:', this.totalPages)
+      const numbers = Array.from({ length: this.totalPages }, (_, i) => i + 1)
+      console.log('Page numbers:', numbers)
+      return numbers
+    },
     formattedOrders() {
       return this.selectedOrders.map((order) => {
         const formattedOrder = {
@@ -270,6 +290,10 @@ export default {
 </script>
 
 <style>
+.orders-container {
+  padding: 0 20px; /* Adjust the 20px as needed */
+}
+
 table {
   border-collapse: collapse; /* Ensures that the border is collapsed into a single border */
   width: 100%; /* Optional: Makes the table take full width of its container */
@@ -292,4 +316,29 @@ thead {
   color: black;
   background-color: #f2f2f2; /* Optional: Adds a background color to the table header */
 }
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+.pagination .page-item {
+  margin: 0 5px;
+  cursor: pointer;
+}
+.pagination .page-link {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #007bff;
+  text-decoration: none;
+
+}
+.pagination-container {
+  margin-bottom: 20px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>

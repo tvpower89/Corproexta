@@ -87,7 +87,7 @@ app.get('/api/orders/names', async (req, res) => {
 
 
 app.get('/api/orders/', async (req, res) => {
-    const { name, startDate, endDate, specificDate, clientName } = req.query;
+    const { name, startDate, endDate, specificDate, clientName, page = 1, limit = 50 } = req.query; // Added page and limit for pagination
     let query = {};
 
     if (name) {
@@ -119,8 +119,16 @@ app.get('/api/orders/', async (req, res) => {
     }
 
     try {
-        const orders = await Order.find(query).lean();
-        res.json(orders);
+        const startIndex = (parseInt(page) - 1) * parseInt(limit);
+        const total = await Order.countDocuments(query);
+        const orders = await Order.find(query).limit(parseInt(limit)).skip(startIndex).lean();
+        
+        res.json({
+            total, // Total number of orders
+            orders, // Paginated list of orders
+            totalPages: Math.ceil(total / limit), // Total number of pages
+            currentPage: parseInt(page) // Current page number
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
