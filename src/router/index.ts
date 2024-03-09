@@ -12,7 +12,15 @@ const router = createRouter({
     {
       path: '/notifications',
       name: 'notifications',
-      component: () => import('../views/NotificationView.vue')
+      component: () => import('../views/NotificationView.vue'),
+      beforeEnter: (to, from, next) => {
+        if (!localStorage.getItem('authToken')) {
+          alert('You must be logged in to view notifications.')
+          next('/login')
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/dashboard',

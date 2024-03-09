@@ -205,7 +205,7 @@ app.post('/api/orders', async (req, res) => {
             // Assuming you have a Notification model or some way to handle notifications
             // Create and save a notification
             // This is a placeholder, adjust according to how you handle notifications
-            const notificationMessage = `${name} has sent more than 3 orders to ${client} in the last 30 days.`;
+            const notificationMessage = `${name} has sent ${ordersCount} orders to ${client} in the last 30 days.`;
             const notification = new Notification({ message: notificationMessage });
             await notification.save();
         }
