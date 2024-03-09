@@ -182,31 +182,32 @@ app.patch('/api/orders/:id', async (req, res) => {
     }
 });
 
+
 app.post('/api/orders', async (req, res) => {
     const { name, items, client } = req.body;
 
     try {
-        // Save the new order
-        const newOrder = new Order({ name, items, client });
-        await newOrder.save();
+        // Instead of directly saving a new order here, call the createOrder function
+        // Ensure that createOrder function is properly importing and saving the order
+        const newOrder = await createOrder(name, items, client);
 
-        // Calculate date 30 days ago
+        // Logic for checking if more than 3 orders have been sent to the same client by the same name in the last 30 days
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        // Count existing orders for this client from this name in the last 30 days
-        const count = await Order.countDocuments({
+        const ordersCount = await Order.countDocuments({
             name,
             client,
             createdDate: { $gte: thirtyDaysAgo }
         });
 
-        // If more than 3 orders (including the current one), create a notification
-        if (count > 3) {
-            const message = `${name} has sent more than 3 orders to ${client} in the last 30 days.`;
-            const notification = new Notification({ message });
+        if (ordersCount > 3) {
+            // Assuming you have a Notification model or some way to handle notifications
+            // Create and save a notification
+            // This is a placeholder, adjust according to how you handle notifications
+            const notificationMessage = `${name} has sent more than 3 orders to ${client} in the last 30 days.`;
+            const notification = new Notification({ message: notificationMessage });
             await notification.save();
-            // Optionally, you can also send back a notification in the response or handle it as needed
         }
 
         res.status(201).json({ message: 'Order added successfully', order: newOrder });
