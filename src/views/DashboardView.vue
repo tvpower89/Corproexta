@@ -1,27 +1,28 @@
 <template>
-  <div>
-    <select v-model="selectedName" @change="fetchOrdersForName">
+  <div class="filter-container">
+    <select v-model="selectedName" @change="fetchOrdersForName" class="filter-select">
       <option disabled value="">Please select a name</option>
       <option v-for="name in names" :key="name" :value="name">{{ name }}</option>
       <option value="all">All</option>
     </select>
-    <div>
+    <div class="filter-item">
       <label for="startDate">Start Date:</label>
       <input type="date" id="startDate" v-model="startDate" />
-
+    </div>
+    <div class="filter-item">
       <label for="endDate">End Date:</label>
       <input type="date" id="endDate" v-model="endDate" />
-
-      <button @click="fetchOrdersForName">Filter</button>
     </div>
-    <div>
+    <div class="filter-item">
       <label for="specificDate">Specific Date:</label>
       <input type="date" id="specificDate" v-model="specificDate" />
     </div>
-    <div>
+    <div class="filter-item">
       <label for="clientName">Client Name:</label>
       <input type="text" id="clientName" v-model="clientName" />
     </div>
+    <button @click="fetchOrdersForName" class="filter-button">Filter</button>
+  </div>
 
     <div class="orders-container" v-if="selectedOrders.length > 0">
       <table>
@@ -61,7 +62,7 @@
         </tbody>
       </table>
     </div>
-  </div>
+  
   <div v-if="isEditing" class="modal">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
@@ -98,7 +99,7 @@
       
     </div>
   </div>
-  <h1>Test</h1>
+  
   <div class="pagination-container">
     <nav aria-label="Page navigation">
           <ul class="pagination">
@@ -290,6 +291,34 @@ export default {
 </script>
 
 <style>
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px; /* Adjust space between filters as needed */
+  padding: 20px; /* Add padding around the filter area */
+}
+
+.filter-select, .filter-item input, .filter-button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.filter-select {
+  cursor: pointer;
+}
+
+.filter-button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  background-color: #0056b3;
+}
 .orders-container {
   padding: 0 20px; /* Adjust the 20px as needed */
 }
