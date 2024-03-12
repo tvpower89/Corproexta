@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config';
 import createOrder from './createOrder.js'
 const app = express();
-const port =  process.env.PORT || 3000;
+const PORT =  process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -264,7 +264,7 @@ app.delete('/api/notifications/:id', async (req, res) => {
 
 
 
-app.listen(port, () => {
+app.listen(PORT, () => {
    console.log(`Server started on http://localhost:${port}`);
 });
 
