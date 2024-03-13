@@ -6,7 +6,9 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*"
-  ],
+  ],  
+  "exclude": ["node_modules", "**/*.timestamp-*.mjs"],
+
   "compilerOptions": {
     "allowJs": true,
     "composite": true,
