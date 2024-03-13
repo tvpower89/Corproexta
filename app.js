@@ -265,7 +265,7 @@ app.delete('/api/notifications/:id', async (req, res) => {
 
 
 app.listen(PORT, () => {
-   console.log(`Server started on http://localhost:${port}`);
+   console.log(`Server started on http://localhost:${PORT}`);
 });
 
 export default app
