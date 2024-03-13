@@ -42,7 +42,7 @@ export default {
   methods: {
     async fetchNotifications() {
       try {
-        const response = await fetch('http://localhost:3000/api/notifications') // Adjust this URL to your API endpoint
+        const response = await fetch('https://corproexta-bd03fccb46f7.herokuapp.com/api/notifications') // Adjust this URL to your API endpoint
         if (!response.ok) throw new Error('Failed to fetch notifications')
         this.notifications = await response.json()
       } catch (error) {
@@ -51,7 +51,7 @@ export default {
     },
     async deleteNotification(notificationId) {
       try {
-        await fetch(`http://localhost:3000/api/notifications/${notificationId}`, {
+        await fetch(`https://corproexta-bd03fccb46f7.herokuapp.com/api/notifications/${notificationId}`, {
           method: 'DELETE'
         })
         this.notifications = this.notifications.filter((n) => n._id !== notificationId)
@@ -62,7 +62,7 @@ export default {
     async clearNotifications() {
       try {
         // Assuming /api/notifications/clear deletes all notifications
-        await fetch('http://localhost:3000/api/notifications', { method: 'DELETE' })
+        await fetch('https://corproexta-bd03fccb46f7.herokuapp.com/api/notifications', { method: 'DELETE' })
         this.notifications = []
       } catch (error) {
         console.error('Error clearing notifications:', error)

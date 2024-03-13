@@ -24,45 +24,45 @@
     <button @click="fetchOrdersForName" class="filter-button">Filter</button>
   </div>
 
-    <div class="orders-container" v-if="selectedOrders.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Order Date</th>
-            <th>Name</th>
-            <th>CHAKARO PEQUENO</th>
-            <th>CHAKARO GRANDE</th>
-            <th>CHAKARO CAJETON</th>
-            <th>MANDA'OR CAJETON</th>
-            <th>CAFE 100G</th>
-            <th>CAFE 200G</th>
-            <th>Client</th>
-            <th>Actions</th>
-            <!-- New column for actions -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="order in formattedOrders" :key="order._id">
-            <td>{{ formatDate(order.createdDate) }}</td>
-            <td>{{ order.name }}</td>
-            <td>{{ order['CHAKARO PEQUENO'] || 0 }}</td>
-            <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
-            <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
-            <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
-            <td>{{ order['CAFE 100G'] || 0 }}</td>
-            <td>{{ order['CAFE 200G'] || 0 }}</td>
-            <td>{{ order.client }}</td>
+  <div class="orders-container" v-if="selectedOrders.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Order Date</th>
+          <th>Name</th>
+          <th>CHAKARO PEQUENO</th>
+          <th>CHAKARO GRANDE</th>
+          <th>CHAKARO CAJETON</th>
+          <th>MANDA'OR CAJETON</th>
+          <th>CAFE 100G</th>
+          <th>CAFE 200G</th>
+          <th>Client</th>
+          <th>Actions</th>
+          <!-- New column for actions -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="order in formattedOrders" :key="order._id">
+          <td>{{ formatDate(order.createdDate) }}</td>
+          <td>{{ order.name }}</td>
+          <td>{{ order['CHAKARO PEQUENO'] || 0 }}</td>
+          <td>{{ order['CHAKARO GRANDE'] || 0 }}</td>
+          <td>{{ order['CHAKARO CAJETON'] || 0 }}</td>
+          <td>{{ order["MANDA'OR CAJETON"] || 0 }}</td>
+          <td>{{ order['CAFE 100G'] || 0 }}</td>
+          <td>{{ order['CAFE 200G'] || 0 }}</td>
+          <td>{{ order.client }}</td>
 
-            <td>
-              <!-- New cells for actions -->
-              <button @click="editOrder(order._id)">Edit</button>
-              <button @click="deleteOrder(order._id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
+          <td>
+            <!-- New cells for actions -->
+            <button @click="editOrder(order._id)">Edit</button>
+            <button @click="deleteOrder(order._id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <div v-if="isEditing" class="modal">
     <div class="modal-content">
       <span class="close" @click="closeModal">&times;</span>
@@ -96,24 +96,23 @@
         <!-- Add more fields as necessary -->
         <button type="submit">Update Order</button>
       </form>
-      
     </div>
   </div>
-  
+
   <div class="pagination-container">
     <nav aria-label="Page navigation">
-          <ul class="pagination">
-            <li
-              v-for="pageNum in pageNumbers"
-              :key="pageNum"
-              class="page-item"
-              @click="fetchOrdersForName(pageNum)"
-            >
-              <a class="page-link">{{ pageNum }}</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <ul class="pagination">
+        <li
+          v-for="pageNum in pageNumbers"
+          :key="pageNum"
+          class="page-item"
+          @click="fetchOrdersForName(pageNum)"
+        >
+          <a class="page-link">{{ pageNum }}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 
 <script>
@@ -150,7 +149,7 @@ export default {
       if (!this.editingOrder) return
 
       try {
-        const response = await fetch(`http://localhost:3000/api/orders/${this.editingOrder._id}`, {
+        const response = await fetch(`https://corproexta-bd03fccb46f7.herokuapp.com/api/orders/${this.editingOrder._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
@@ -189,7 +188,7 @@ export default {
     async deleteOrder(orderId) {
       if (confirm('Are you sure you want to delete this order?')) {
         try {
-          const response = await fetch(`http://localhost:3000/api/orders/${orderId}`, {
+          const response = await fetch(`https://corproexta-bd03fccb46f7.herokuapp.com/api/orders/${orderId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -213,7 +212,7 @@ export default {
 
     async fetchNames() {
       try {
-        const response = await fetch('http://localhost:3000/api/orders/names')
+        const response = await fetch('https://corproexta-bd03fccb46f7.herokuapp.com/api/orders/names')
         this.names = await response.json()
       } catch (error) {
         console.error('There was an error fetching the names:', error)
@@ -236,7 +235,7 @@ export default {
         if (this.endDate) params.append('endDate', this.endDate)
       }
 
-      let url = `http://localhost:3000/api/orders/?${params.toString()}`
+      let url = `https://corproexta-bd03fccb46f7.herokuapp.com/api/orders/?${params.toString()}`
 
       try {
         const response = await fetch(url)
@@ -299,7 +298,9 @@ export default {
   padding: 20px; /* Add padding around the filter area */
 }
 
-.filter-select, .filter-item input, .filter-button {
+.filter-select,
+.filter-item input,
+.filter-button {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -361,13 +362,11 @@ thead {
   border-radius: 5px;
   color: #007bff;
   text-decoration: none;
-
 }
 .pagination-container {
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 </style>
