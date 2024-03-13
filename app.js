@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config';
 import createOrder from './createOrder.js'
 const app = express();
-const port = 3000;
+const PORT =  process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -87,7 +87,7 @@ app.get('/api/orders/names', async (req, res) => {
 
 
 app.get('/api/orders/', async (req, res) => {
-    const { name, startDate, endDate, specificDate, clientName } = req.query;
+    const { name, startDate, endDate, specificDate, clientName, page = 1, limit = 50 } = req.query; // Added page and limit for pagination
     let query = {};
 
     if (name) {
@@ -119,8 +119,16 @@ app.get('/api/orders/', async (req, res) => {
     }
 
     try {
-        const orders = await Order.find(query).lean();
-        res.json(orders);
+        const startIndex = (parseInt(page) - 1) * parseInt(limit);
+        const total = await Order.countDocuments(query);
+        const orders = await Order.find(query).limit(parseInt(limit)).skip(startIndex).lean();
+        
+        res.json({
+            total, // Total number of orders
+            orders, // Paginated list of orders
+            totalPages: Math.ceil(total / limit), // Total number of pages
+            currentPage: parseInt(page) // Current page number
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -182,31 +190,32 @@ app.patch('/api/orders/:id', async (req, res) => {
     }
 });
 
+
 app.post('/api/orders', async (req, res) => {
     const { name, items, client } = req.body;
 
     try {
-        // Save the new order
-        const newOrder = new Order({ name, items, client });
-        await newOrder.save();
+        // Instead of directly saving a new order here, call the createOrder function
+        // Ensure that createOrder function is properly importing and saving the order
+        const newOrder = await createOrder(name, items, client);
 
-        // Calculate date 30 days ago
+        // Logic for checking if more than 3 orders have been sent to the same client by the same name in the last 30 days
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-        // Count existing orders for this client from this name in the last 30 days
-        const count = await Order.countDocuments({
+        const ordersCount = await Order.countDocuments({
             name,
             client,
             createdDate: { $gte: thirtyDaysAgo }
         });
 
-        // If more than 3 orders (including the current one), create a notification
-        if (count > 3) {
-            const message = `${name} has sent more than 3 orders to ${client} in the last 30 days.`;
-            const notification = new Notification({ message });
+        if (ordersCount > 3) {
+            // Assuming you have a Notification model or some way to handle notifications
+            // Create and save a notification
+            // This is a placeholder, adjust according to how you handle notifications
+            const notificationMessage = `${name} has sent ${ordersCount} orders to ${client} in the last 30 days.`;
+            const notification = new Notification({ message: notificationMessage });
             await notification.save();
-            // Optionally, you can also send back a notification in the response or handle it as needed
         }
 
         res.status(201).json({ message: 'Order added successfully', order: newOrder });
@@ -255,6 +264,8 @@ app.delete('/api/notifications/:id', async (req, res) => {
 
 
 
-app.listen(port, () => {
-   console.log(`Server started on http://localhost:${port}`);
+app.listen(PORT, () => {
+   console.log(`Server started on http://localhost:${PORT}`);
 });
+
+export default app

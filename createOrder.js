@@ -24,37 +24,9 @@ async function createOrder(name, orderItems, client) {
         console.log('Order added successfully');
     } catch (error) {
         console.error('Error creating order:', error);
-    } finally {
-        await mongoose.disconnect();
-    }
+    } 
 }
-const orderItems = [
-    {
-        productName: 'CHAKARO PEQUENO',
-        quantity: 10
-    },
-    {
-        productName: 'CHAKARO GRANDE',
-        quantity: 5 // This quantity is explicitly set to 0 as per your schema's default
-    },
-    {
-        productName: 'CHAKARO CAJETON',
-        quantity: 8
-    },
-    {
-        productName: 'MANDA\'OR CAJETON',
-        quantity: 4// This quantity is explicitly set to 0 as per your schema's default
-    },
-    {
-        productName: 'CAFE 100G',
-        quantity: 69// This quantity is explicitly set to 0 as per your schema's default
-    },
-    {
-        productName: 'CAFE 200G',
-        quantity: 7// This quantity is explicitly set to 0 as per your schema's default
-    },
-    // Add more dummy products as needed
-];
+
 
 
 export default createOrder
